@@ -2,7 +2,7 @@
 
 ## Solution
 
-View the complete syntax [here](https://github.com/abnogueira/sql-ark/8-week-sql-challenge/blob/main/case-study-1/dannys-diner.sql).
+View the complete syntax [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-1/dannys-diner.sql).
 
 ---
 
