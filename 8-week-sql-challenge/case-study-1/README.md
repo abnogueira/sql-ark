@@ -5,7 +5,7 @@
 - [Problem Statement](#problem-statement)
 - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Case Study Questions](#case-study-questions)
-- [My Solution](https://github.com/abnogueira/sql-ark/8-week-sql-challenge/blob/main/case-study-1/Solution.md)
+- [My Solution](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-1/Solution.md)
 
 ---
 
