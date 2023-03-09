@@ -1,9 +1,9 @@
---------------------------------
---CASE STUDY #1: DANNY'S DINER--
---------------------------------
+-------------------------------
+--CASE STUDY #2: PIZZA RUNNER--
+-------------------------------
 
 --Author: Anabela Nogueira
---Date: 2/03/2023
+--Date: 2023/03/02
 --Tool used: Posgres
 
 CREATE SCHEMA pizza_runner;
