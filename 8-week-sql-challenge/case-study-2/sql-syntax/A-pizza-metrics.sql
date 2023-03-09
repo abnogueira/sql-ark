@@ -122,6 +122,57 @@ VALUES
    (11, 'Tomatoes'),
    (12, 'Tomato Sauce');
 
+-----------------
+--DATA CLEANING--
+-----------------
+
+--TABLE: customer_order
+--Transform 'null' and [NULL] into empty string from columns exclusions and extras.
+
+UPDATE pizza_runner.customer_orders
+SET exclusions='' where exclusions='null';
+
+UPDATE pizza_runner.customer_orders
+SET extras='' where extras='null' or extras is null;
+
+--TABLE: runner_orders
+
+UPDATE pizza_runner.runner_orders
+SET pickup_time =
+(CASE
+	WHEN pickup_time LIKE 'null' THEN NULL
+	ELSE pickup_time
+	END),
+	distance = (CASE
+	WHEN distance LIKE 'null' THEN NULL
+	WHEN distance LIKE '%km' THEN TRIM('km' FROM distance)
+	ELSE distance
+	END),
+	duration = (CASE
+	WHEN duration LIKE 'null' THEN NULL
+	WHEN duration LIKE '%mins' THEN TRIM('mins' FROM duration)
+	WHEN duration LIKE '%minute' THEN TRIM('minute' FROM duration)
+	WHEN duration LIKE '%minutes' THEN TRIM('minutes' FROM duration)
+	ELSE duration
+	END),
+	cancellation = (CASE
+	WHEN cancellation LIKE 'null' THEN ''
+	ELSE cancellation
+	END)
+
+ALTER TABLE pizza_runner.runner_orders
+ALTER COLUMN pickup_time TYPE TIMESTAMP
+	USING CASE 
+		WHEN pickup_time ~ '^[0-9]+[-][0-9]+[-][0-9]+[\s][0-9]+[:][0-9]+[:][0-9]+' THEN pickup_time::TIMESTAMP ELSE NULL END;
+
+ALTER TABLE pizza_runner.runner_orders
+ALTER COLUMN distance TYPE NUMERIC
+	USING CASE WHEN distance IS NOT NULL THEN distance::NUMERIC(3,1) ELSE NULL END;
+
+ALTER TABLE pizza_runner.runner_orders
+ALTER COLUMN duration TYPE INT
+	USING CASE WHEN duration ~ '^([0-9]+)' THEN duration::INTEGER ELSE NULL END;
+
 ------------------------
 --CASE STUDY QUESTIONS--
 ------------------------
@@ -147,7 +198,7 @@ JOIN pizza_runner.customer_orders c
 	ON r.order_id = c.order_id
 JOIN pizza_runner.pizza_names n 
 	ON c.pizza_id = n.pizza_id
-WHERE r.distance NOT LIKE 'null'
+WHERE r.distance IS NOT NULL
 GROUP BY n.pizza_name;
 
 --5. Which item was the most popular for each customer?
@@ -166,39 +217,36 @@ SELECT MAX(pizza_delivered) FROM (
 	FROM pizza_runner.runner_orders r
 	JOIN pizza_runner.customer_orders c
 		ON r.order_id = c.order_id
-	WHERE r.distance NOT LIKE 'null'
+	WHERE r.distance IS NOT NULL
 	GROUP BY r.order_id
 ) AS orders;
 
 --7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 SELECT c.customer_id
 	, sum(CASE
-		WHEN c.exclusions = 'null' AND c.extras = 'null' THEN 0
 		WHEN c.exclusions <> '' OR c.extras <> '' THEN 1
 		ELSE 0
 	END) AS at_least_one_change
 	, sum(CASE
-		WHEN c.exclusions = 'null' AND c.extras = 'null' THEN 1
-		WHEN (c.exclusions = '' OR c.exclusions IS NULL) AND (c.extras = '' OR c.extras IS NULL) THEN 1
+		WHEN c.exclusions = '' AND c.extras = '' THEN 1
 		ELSE 0
 	END) AS no_change
 FROM pizza_runner.runner_orders r
 JOIN pizza_runner.customer_orders c
 	ON r.order_id = c.order_id
-WHERE r.distance NOT LIKE 'null'
+WHERE r.distance IS NOT NULL
 GROUP BY c.customer_id
 ORDER BY c.customer_id;
 
 --8. How many pizzas were delivered that had both exclusions and extras?
 SELECT sum(CASE
-		WHEN c.exclusions = 'null' OR c.extras = 'null' THEN 0
 		WHEN c.exclusions <> '' AND c.extras <> '' THEN 1
 		ELSE 0
 	END) AS nb_pizza_w_exclusions_and_extras
 FROM pizza_runner.runner_orders r
 JOIN pizza_runner.customer_orders c
 	ON r.order_id = c.order_id
-WHERE r.distance NOT LIKE 'null';
+WHERE r.distance IS NOT NULL;
 
 --9. What was the total volume of pizzas ordered for each hour of the day?
 SELECT date_part('hour', c.order_time) AS hour_of_day,

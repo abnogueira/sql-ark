@@ -2,7 +2,7 @@
 
 ## Solution - A. Pizza Metrics
 
-View the complete syntax - TBD.
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/sql-syntax/A-pizza-metrics.sql).
 
 ---
 
@@ -68,7 +68,7 @@ JOIN pizza_runner.customer_orders c
 	ON r.order_id = c.order_id
 JOIN pizza_runner.pizza_names n 
 	ON c.pizza_id = n.pizza_id
-WHERE r.distance NOT LIKE 'null'
+WHERE r.distance IS NOT NULL
 GROUP BY n.pizza_name;
 ```
 
@@ -124,7 +124,7 @@ SELECT MAX(pizza_delivered) FROM (
 	FROM pizza_runner.runner_orders r
 	JOIN pizza_runner.customer_orders c
 		ON r.order_id = c.order_id
-	WHERE r.distance NOT LIKE 'null'
+	WHERE r.distance IS NOT NULL
 	GROUP BY r.order_id
 ) AS orders;
 ```
@@ -139,32 +139,24 @@ SELECT MAX(pizza_delivered) FROM (
 ---
 
 ### 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
 ```sql
 SELECT c.customer_id
 	, sum(CASE
-		WHEN c.exclusions = 'null' AND c.extras = 'null' THEN 0
 		WHEN c.exclusions <> '' OR c.extras <> '' THEN 1
 		ELSE 0
 	END) AS at_least_one_change
 	, sum(CASE
-		WHEN c.exclusions = 'null' AND c.extras = 'null' THEN 1
-		WHEN (c.exclusions = '' OR c.exclusions IS NULL) AND (c.extras = '' OR c.extras IS NULL) THEN 1
+		WHEN c.exclusions = '' AND c.extras = '' THEN 1
 		ELSE 0
 	END) AS no_change
 FROM pizza_runner.runner_orders r
 JOIN pizza_runner.customer_orders c
 	ON r.order_id = c.order_id
-WHERE r.distance NOT LIKE 'null'
+WHERE r.distance IS NOT NULL
 GROUP BY c.customer_id
 ORDER BY c.customer_id;
 ```
-
-#### Steps
-After looking into the data of the column `exclusions` and `extras` on the table `customer_order`, which are column of type `VARCHAR`. It's possible to see when there are changes to the pizzas, there are one or several numbers separated by commas that indicate which changes to the pizzas were requested by the customer; on the other hand when no changes are requested the cells can be: empty, null as a string or NULL do type `NULL`.
-- The expression `stringexpression = ''` yields:
-   - `TRUE` for `''` (or for any string consisting of only spaces with the data type `char(n)`)
-   - `NULL` for `NULL`
-   - `FALSE` for anything else
 
 #### Answer:
 | customer_id | at_least_one_change | no_change |
@@ -184,14 +176,13 @@ After looking into the data of the column `exclusions` and `extras` on the table
 
 ```sql
 SELECT sum(CASE
-		WHEN c.exclusions = 'null' OR c.extras = 'null' THEN 0
 		WHEN c.exclusions <> '' AND c.extras <> '' THEN 1
 		ELSE 0
 	END) AS nb_pizza_w_exclusions_and_extras
 FROM pizza_runner.runner_orders r
 JOIN pizza_runner.customer_orders c
 	ON r.order_id = c.order_id
-WHERE r.distance NOT LIKE 'null';
+WHERE r.distance IS NOT NULL;
 ```
 
 #### Answer:
@@ -217,11 +208,11 @@ ORDER BY hour_of_day;
 | hour_of_day | total_pizzas |
 | :- | :- |
 | 11 | 1 |
-| 13 |	3 |
-| 18 |	3 |
-| 19 |	1 |
-| 21 |	3 |
-| 23 |	3 |
+| 13 | 3 |
+| 18 | 3 |
+| 19 | 1 |
+| 21 | 3 |
+| 23 | 3 |
 
 - Peak hours of the day are at 13h, 18h, 21h and 23h with 3 pizzas orders.
 - Lower volume of pizzas seen at 11h and 19h.
