@@ -8,6 +8,8 @@
 - [Case Study Questions](#case-study-questions)
 - My Solutions:
     - [A. Pizza Metrics](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/A-pizza-metrics.md)
+    - [B. Runner and Customer Experience](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/B-runner-cx.md)
+    - [C. Ingredient Optimisation](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/C-ingredient-optimisation.md)
 
 ---
 
