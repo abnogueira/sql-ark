@@ -7,9 +7,11 @@
 - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Case Study Questions](#case-study-questions)
 - My Solutions:
-    - [A. Pizza Metrics](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/A-pizza-metrics.md)
-    - [B. Runner and Customer Experience](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/B-runner-cx.md)
-    - [C. Ingredient Optimisation](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/C-ingredient-optimisation.md)
+    - [A. Pizza Metrics][solution-a]
+    - [B. Runner and Customer Experience][solution-b]
+    - [C. Ingredient Optimisation][solution-c]
+    - [D. Pricing and Ratings][solution-d]
+    - [E. Bonus Questions][solution-e]
 
 ---
 
@@ -29,7 +31,7 @@ Click here to expand!
 
 ### A. Pizza Metrics
 
-View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/A-pizza-metrics.md).
+View my solution [here][solution-a].
 
 1. How many pizzas were ordered?
 2. How many unique customer orders were made?
@@ -44,7 +46,7 @@ View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-s
 
 ### B. Runner and Customer Experience
 
-View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/B-runner-cx.md).
+View my solution [here][solution-b].
 
 1. How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)
 2. What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?
@@ -56,7 +58,7 @@ View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-s
 
 ### C. Ingredient Optimisation
 
-View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/C-ingredient-optimisation.md).
+View my solution [here][solution-c].
 
 1. What are the standard ingredients for each pizza?
 2. What was the most commonly added extra?
@@ -72,7 +74,7 @@ View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-s
 
 ### D. Pricing and Ratings
 
-View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/D-pricing-ratings.md).
+View my solution [here][solution-d].
 
 1. If a Meat Lovers pizza costs $12 and Vegetarian costs $10 and there were no charges for changes - how much money has Pizza Runner made so far if there are no delivery fees?
 2. What if there was an additional $1 charge for any pizza extras?
@@ -93,8 +95,14 @@ View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-s
 
 ### E. Bonus Questions
 
-View my solution [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/E-bonus-questions.md).
+View my solution [here][solution-e].
 
 If Danny wants to expand his range of pizzas - how would this impact the existing data design? Write an INSERT statement to demonstrate what would happen if a new Supreme pizza with all the toppings was added to the Pizza Runner menu?
 
 </details>
+
+[solution-a]: https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/A-pizza-metrics.md
+[solution-b]: https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/B-runner-cx.md
+[solution-c]: https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/C-ingredient-optimisation.md
+[solution-d]: https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/D-pricing-ratings.md
+[solution-e]: https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/E-bonus-questions.md
