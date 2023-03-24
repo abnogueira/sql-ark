@@ -139,6 +139,8 @@ What could be monitor to determine the rate of growth for Foodie-Fi:
 
 #### Answer:
 
+Looking into all the metrics, Foodie-Fi seems to be growing, with a churn that is less than 22% (on a monthly view). Churning customers seem a little high, but the revenue is still increasing which seems that the business is doing all right so far. It needs a little more than a year of data in order to see if there are some monthly trends.
+
 - Customer Acquisition:
 
 | month |	total_users |	trial_users	| paying_users |
@@ -177,8 +179,6 @@ What could be monitor to determine the rate of growth for Foodie-Fi:
 
 ![image](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/images/solution3d_churn_chart.png "Monthly Churn Rate Chart")
 
-CALCULATE
-
 - Average Revenue Per User (ARPU) on a monthly basis:
 
 | monthly |	customer_count | arpu | mrr |
@@ -206,14 +206,48 @@ CALCULATE
 
 ### 2. What key metrics would you recommend Foodie-Fi management to track over time to assess performance of their overall business?
 
+Start by assessing the metrics on the previous question and few more:
+
+- Customer acquisition and the total number of users at the same date;
+  - Number of active customers (#total - #churn);
+  - Number of paying customers (#total - #churn - #trial);
+  - Number of new customers on a certain date;
+- Churn Rate;
+- Ratio new to churn customers - to understand if the company grows or losing their customers;
+- Ratio new customers to paying customers;
+- Revenue: total revenue, recurring revenue, average revenue per user (ARPU), average revenue per paying user (ARPPU), monthly recurring revenue (MRR);
+- Number of active customers by plans - to understand what plan do customers prefer, and to see growth points;
+- Number of active customers on date after their sign-up (cohort analysis: day 7, day 30, etc).
+
 ---
 
 ### 3. What are some key customer journeys or experiences that you would analyse further to improve customer retention?
+
+- **Trial customers** - it's important to understand what makes someone to subscribe a plan after their 7 days free trial. Furthermore, the experience they had: they actually used it during the free trial on a daily basis, what type of videos they watched (for instance, maybe there are few videos of the same type of those they add to favorities).
+- **Upgrading customers** - how long did someone take until upgrading for a PRO plan? What features did they use the most? what type of videos/ experience are they having?
+- **Downgrading customers** - what could be the main reason for a downgrade, is it the price vs what PRO features were they using? What was their experience before and after a PRO plan?
+- **Churn customers** - why are they cancelling our subscription? Were they using Foodie-Fi or not? If they were, what type of content they watched?
 
 ---
 
 ### 4. If the Foodie-Fi team were to create an exit survey shown to customers who wish to cancel their subscription, what questions would you include in the survey?
 
+1. What is the main reason to make you cancel? - Please select one reason:
+    - Too complicated to use.
+    - Lack of content that I like.
+    - Lack of features.
+    - Too expensive.
+    - Found another product that I prefer.
+2. From 1 to 10, how was your experience (1-extremely bad & 10-excellent)
+3. What features did you loved the most?
+4. What features did you disliked the most?
+4. What could we improve?
+
 ---
 
 ### 5. What business levers could the Foodie-Fi team use to reduce the customer churn rate? How would you validate the effectiveness of your ideas?
+
+- We can monitor the Loss Value per Churn on a monthly basis for example, instead of Churn Rate for a simple reason: the loss after a trial period is lesser than a paying customer.
+  - For customers on a 7 days free trial, it's important to understand how it is their experience, and why they didn't subscribed to a paying plan. And the users during their trial period aren't using the application after two days, we should send them a reminder by email and also a reminder that that customer can experience a PRO feature twice until the end period to see if they want to make a subscription.
+  - For paying customers, after we classify them into different type of users. We can target those who most likelly will churn by giving them opportunity to be alfa testers for some new feature, and gathering their opinion on the inovation.
+- In order to validate the implementation, we can set A/B tests.
