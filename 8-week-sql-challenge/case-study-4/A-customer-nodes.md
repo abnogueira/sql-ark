@@ -2,7 +2,7 @@
 
 ## Solution - A. Customer Nodes Exploration
 
-View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-4/A-customer-nodes.sql).
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-4/sql-syntax/A-customer-nodes.sql).
 
 ---
 
