@@ -2,7 +2,7 @@
 
 ## Solution - D. Outside The Box Questions
 
-View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-3/D-outside-the-box.sql).
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-3/sql-syntax/D-outside-the-box.sql).
 
 ---
 

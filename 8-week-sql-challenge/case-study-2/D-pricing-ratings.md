@@ -2,7 +2,7 @@
 
 ## Solution - D. Pricing and Ratings
 
-View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/CASE-study-2/sql-syntax/D-pricing-ratings.sql).
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/sql-syntax/D-pricing-ratings.sql).
 
 ---
 

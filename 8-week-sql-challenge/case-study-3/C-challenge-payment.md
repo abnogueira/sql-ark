@@ -2,7 +2,7 @@
 
 ## Solution - C. Challenge Payment Question
 
-View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-3/C-challenge-payment.sql).
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-3/sql-syntax/C-challenge-payment.sql).
 
 ---
 

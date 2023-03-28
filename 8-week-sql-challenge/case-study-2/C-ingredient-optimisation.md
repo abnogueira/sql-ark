@@ -2,7 +2,7 @@
 
 ## Solution - C. Ingredient Optimisation
 
-View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/cASe-study-2/sql-syntax/C-ingredient-optimisation.sql).
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-2/sql-syntax/C-ingredient-optimisation.sql).
 
 ---
 
