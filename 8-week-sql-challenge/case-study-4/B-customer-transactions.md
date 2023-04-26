@@ -223,4 +223,4 @@ Without the possibility to question the intentions regarding this question, it's
 | :- |
 | 3.8 |
 
-- 3.8% of the costumers have increased their closing balance higher than 5% every month.
+- 3.8% of the customers have increased their closing balance higher than 5% every month.
