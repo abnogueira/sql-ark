@@ -10,7 +10,7 @@ Access the DB Diagram tool to create the ERD.
 
 Here is the Entity Relationship Diagram:
 
-![image](https://8weeksqlchallenge.com/images/case-study-6-ERdiagram.png "ER diagram")
+![image](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/images/case-study-6-ERdiagram.png "ER diagram")
 
 Note:
 
