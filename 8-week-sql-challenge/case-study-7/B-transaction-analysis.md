@@ -31,7 +31,8 @@ FROM cte_transactions
 
 __Steps:__
 
-- To simplify...
+- To simplify having one query that answers all questions, a CTE named `cte_transactions` was created that aggregates the sales information to a transaction level.
+- Regarding the revenue calculation, I assumed that the discount should be applied.
 
 __Result:__
 
