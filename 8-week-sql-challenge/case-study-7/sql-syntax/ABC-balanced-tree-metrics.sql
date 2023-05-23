@@ -1,14 +1,28 @@
-------------------------------
---CASE STUDY #6: CLIQUE BAIT--
-------------------------------
+--------------------------------
+--CASE STUDY #7: BALANCED TREE--
+--------------------------------
 
 --Author: Anabela Nogueira
---Date: 2023/05/19
+--Date: 2023/05/23
 --Tool used: Posgresql
 
-------------------------
---CASE STUDY QUESTIONS--
-------------------------
+-----------------------------
+-- CASE A STUDY QUESTIONS ---
+--HIGH LEVEL SALES ANALYSIS--
+-----------------------------
+
+--1. What was the total quantity sold for all products?
+--2. What is the total generated revenue for all products before discounts?
+--3. What was the total discount amount for all products?
+SELECT SUM(s.qty) AS total_products,
+    SUM(s.qty * s.price) AS total_revenue_wo_discounts,
+    SUM(ROUND(s.qty * s.price * (s.discount/ 100.0), 2)) AS total_discounts
+FROM balanced_tree.sales s
+
+--------------------------
+--CASE B STUDY QUESTIONS--
+-- TRANSACTION ANALYSIS --
+--------------------------
 
 --1. How many unique transactions were there?
 --2. What is the average unique products purchased in each transaction?
@@ -36,3 +50,8 @@ SELECT COUNT(txn_id) AS unique_txn,
     ROUND(AVG(CASE WHEN "member" IS TRUE THEN total_revenue ELSE NULL END), 2) AS avg_revenue_member,
     ROUND(AVG(CASE WHEN "member" IS FALSE THEN total_revenue ELSE NULL END), 2) AS avg_revenue_non_member
 FROM cte_transactions
+
+--------------------------
+--CASE C STUDY QUESTIONS--
+--   PRODUCT ANALYSIS   --
+--------------------------

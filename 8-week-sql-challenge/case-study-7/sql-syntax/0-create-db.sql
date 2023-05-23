@@ -1,6 +1,6 @@
-------------------------------
---CASE STUDY #6: CLIQUE BAIT--
-------------------------------
+--------------------------------
+--CASE STUDY #7: BALANCED TREE--
+--------------------------------
 
 --Author: Anabela Nogueira
 --Date: 2023/05/17
@@ -15195,15 +15195,3 @@ VALUES
   ('e83aa3', '5', '32', '1', 't', '93620b', '2021-03-01 07:11:24.6624'),
   ('d5e9a6', '2', '23', '1', 't', '93620b', '2021-03-01 07:11:24.6624'),
   ('5d267b', '2', '40', '1', 't', '93620b', '2021-03-01 07:11:24.6624');
-
-------------------------
---CASE STUDY QUESTIONS--
-------------------------
-
---1. What was the total quantity sold for all products?
---2. What is the total generated revenue for all products before discounts?
---3. What was the total discount amount for all products?
-SELECT SUM(s.qty) AS total_products,
-    SUM(s.qty * s.price) AS total_revenue_wo_discounts,
-    SUM(ROUND(s.qty * s.price * (s.discount/ 100.0), 2)) AS total_discounts
-FROM balanced_tree.sales s

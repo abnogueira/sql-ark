@@ -6,6 +6,8 @@ The following questions can be considered key business questions and metrics tha
 
 Each question can be answered using a single query - but as you are writing the SQL to solve each individual problem, keep in mind how you would generate all of these metrics in a single SQL script which the Balanced Tree team can run each month.
 
+View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-7/sql-syntax/ABC-balanced-tree-metrics.sql).
+
 ```sql
 SELECT SUM(s.qty) AS total_products,
     SUM(s.qty * s.price) AS total_revenue_wo_discounts,
