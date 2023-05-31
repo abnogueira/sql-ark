@@ -74,7 +74,7 @@ Write a single SQL script that combines all of the previous questions into a sch
 
 Imagine that the Chief Financial Officer (which is also Danny) has asked for all of these questions at the end of every month.
 
-He first wants you to generate the data for January only - but then he also wants you to demonstrate that you can easily run the samne analysis for February without many changes (if at all).
+He first wants you to generate the data for January only - but then he also wants you to demonstrate that you can easily run the same analysis for February without many changes (if at all).
 
 Feel free to split up your final outputs into as many tables as you need - but be sure to explicitly reference which table outputs relate to which question for full marks.
 
