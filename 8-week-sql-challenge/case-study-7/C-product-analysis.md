@@ -13,7 +13,7 @@ View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/ma
 ### 1. What are the top 3 products by total revenue before discount?
 
 ```sql
-SELECT TOP 3 p.product_name,
+SELECT p.product_name,
     TO_CHAR(SUM(s.qty * s.price), '999,999') AS gross_revenue_total
 FROM balanced_tree.sales AS s
 JOIN balanced_tree.product_details AS p 
@@ -33,252 +33,160 @@ __Answer:__
 
 ---
 
-### 2. What is the total quantity, revenue and discount for each segment?
-
-```sql
-WITH cte_segment_subset AS (
-    SELECT p.segment_name,
-        s.qty,
-        (s.qty * s.price) AS gross_revenue,
-        ROUND(((s.qty * s.price) * (s.discount::NUMERIC / 100)), 1) AS discount
-    FROM balanced_tree.sales AS s
-    JOIN balanced_tree.product_details AS p 
-        ON s.prod_id = p.product_id
-)
-SELECT segment_name,
-    SUM(qty) AS quantity,
-    SUM(gross_revenue - discount) AS total_net_revenue,
-    SUM(discount) AS total_discount
-FROM segment_subset
-GROUP BY 1
-ORDER BY 2 DESC;
-```
-
-__Answer:__
-
-Here is a list of total quantity, revenue and discount for each segment:
-
-| segment_name | quantity | total_net_revenue | total_discount |
-| :- | -: | -: | -: |
-| Jacket| 11385| 322686.3| 44296.7|
-| Jeans| 11349| 182996.5| 25353.5|
-| Shirt| 11265| 356540.8| 49602.2|
-| Socks|  11217| 270947.8| 37029.2|
-
----
-
-### 3. What is the top selling product for each segment?
+### 2. What is the total quantity, revenue and discount for each segment? & 3. What is the top selling product for each segment? & 7. What is the percentage split of revenue by segment for each category?
 
 ```sql
 WITH cte_prd_segment AS (
-    SELECT p.segment_name,
+    SELECT p.category_name,
+        p.segment_name,
         p.product_name,
         SUM(s.qty) AS total_qty,
         SUM(s.qty * s.price) AS gross_revenue,
-        ROW_NUMBER() OVER(PARTITION BY segment_name ORDER BY SUM(s.qty * s.price) DESC) AS revenue_rank_nb
-        ROW_NUMBER() OVER(PARTITION BY segment_name ORDER BY SUM(s.qty) DESC) AS qty_rank_nb
+        SUM(s.qty * s.price - discount) AS total_net_revenue,
+        ROUND((s.qty * s.price) * (s.discount::NUMERIC / 100), 1) AS discount,
+        ROW_NUMBER() OVER(PARTITION BY segment_name ORDER BY SUM(s.qty) DESC) AS qty_rank_nb,
+        ROUND(100.0 * SUM(s.qty * s.price) / SUM(SUM(s.qty * s.price)) 
+            OVER(PARTITION BY category_name), 2) AS revenue_split_pcent
     FROM balanced_tree.sales AS s
     JOIN balanced_tree.product_details AS p 
         ON s.prod_id = p.product_id
-    GROUP BY p.segment_name, p.product_name
+    GROUP BY p.category_name, p.segment_name, p.product_name, s.qty, s.price, s.discount
 )
-SELECT DISTINCT segment_name,
-    product_name AS top_product,
-    total_qty,
-    gross_revenue
-FROM cte_prd_segment
-WHERE qty_rank_nb = 1
-GROUP BY segment_name, product_name, total_qty, gross_revenue
-ORDER BY total_qty DESC, gross_revenue DESC
+SELECT ps.category_name,
+    ps.segment_name,
+    tp.top_product,
+    SUM(ps.total_qty) AS quantity_by_segment,
+    SUM(ps.gross_revenue) - SUM(ps.discount) AS net_revenue_by_segment,
+    SUM(ps.discount) AS total_discount_by_segment,
+    SUM(ps.revenue_split_pcent) AS revenue_split_pcent
+FROM cte_prd_segment ps
+LEFT JOIN (
+    SELECT segment_name, top_product 
+    FROM (
+        SELECT segment_name,
+            product_name AS top_product,
+            total_qty,
+            gross_revenue
+        FROM cte_prd_segment
+        WHERE qty_rank_nb = 1
+        GROUP BY segment_name, product_name, total_qty, gross_revenue
+        ORDER BY total_qty DESC, gross_revenue DESC) AS a
+    ) AS tp
+    on ps.segment_name = tp.segment_name
+GROUP BY ps.category_name, ps.segment_name, tp.top_product
+ORDER BY 4 DESC;
 ```
 
 __Answer:__
 
-Top selling products for each segment by quantity are:
+| category_name | segment_name | top_product | quantity_by_segment | net_revenue_by_segment | discount_by_segment | revenue_split_pcent |
+| :- | :- | :- |  -: | -: | -: | -: |
+| Womens | Jacket| Indigo Rain Jacket - Womens| 11385| 362661.2| 4321.8| 63.85|
+| Womens| Jeans| Navy Oversized Jeans - Womens| 11349| 205874.1| 2475.9| 36.16|
+| Mens| Shirt| White Tee Shirt - Mens| 11265| 401327.3| 4815.7| 57.02|
+| Mens| Socks| Navy Solid Socks - Mens| 11217| 304285.4| 3691.6| 43.13|
 
-| segment_name | product_name | total_qty | gross_revenue |
-| :- | :- | -: | -: |
-| Jacket| Grey Fashion Jacket - Womens| 3876| 209304|
-| Jeans | Navy Oversized Jeans - Womens| 3856| 50128|
-| Shirt | Blue Polo Shirt - Mens| 3819| 217683|
-| Socks | Navy Solid Socks - Mens| 3792| 136512|
-
-Top selling products for each segment by gross revenue, can be obtained by changing `WHERE` clause into `revenue_rank_nb = 1`. The results are:
-
-| segment_name | product_name | total_qty | gross_revenue |
-| :- | :- | -: | -: |
-| Jacket| Grey Fashion Jacket - Womens| 3876| 209304|
-| Shirt| Blue Polo Shirt - Mens| 3819| 217683|
-| Socks| Navy Solid Socks - Mens| 3792| 136512|
-| Jeans| Black Straight Jeans - Womens| 3786| 121152|
-
-- If we analyse the top selling products by quantity or by gross revenue only one product differs which is Black Straight Jeans - Womens (return more gross revenue), while Navy Oversized Jeans - Womens gets purchased more times. The other products are presented in the tables below.
+- The segment with most sold products is the Jacket  segment, with a total of 11385 products sold. And the segment with a higher net revenue and total discount is the Shirt segment.
+- Top selling products for each segment are: Grey Fashion Jacket - Womens for Jacket segment; Navy Oversized Jeans - Womens for Jeans segment; Blue Polo Shirt - Mens for Shirt segment; and Navy Solid Socks - Mens for Socks segment.
+- Percentage split of revenue by segment for each category:
+  - For Womens, Jacket and Jeans segments results in 63.85% and 36.16% of revenue, respectively.
+  - For Mens, Shirt and Socks segments results in 57.02% and 43.13% of revenue, respectively.
 
 ---
 
-### 4. What is the total quantity, revenue and discount for each category?
+### 4. What is the total quantity, revenue and discount for each category? & 5. What is the top selling product for each category? & 8. What is the percentage split of total revenue by category?
 
 ```sql
-WITH cte_category_subset AS (
+WITH cte_prd_category AS (
     SELECT p.category_name,
-        s.qty,
-        (s.qty * s.price) AS gross_revenue,
-        ROUND(((s.qty * s.price) * (s.discount::NUMERIC / 100)), 1) AS discount
+        p.product_name,
+        SUM(s.qty) AS total_qty,
+        SUM(s.qty * s.price) AS gross_revenue,
+     ROUND(SUM(s.qty * s.price * s.discount::NUMERIC / 100), 1) AS discount,
+        ROW_NUMBER() OVER(PARTITION BY category_name ORDER BY SUM(s.qty) DESC) AS qty_rank_nb
     FROM balanced_tree.sales AS s
     JOIN balanced_tree.product_details AS p 
         ON s.prod_id = p.product_id
+    GROUP BY p.category_name, p.product_name
+),
+cte_top_selling_prd_cat AS (
+    SELECT category_name,
+        product_name AS top_product
+    FROM cte_prd_category
+    WHERE qty_rank_nb = 1
 )
-SELECT category_name,
-    SUM(qty) AS quantity,
+SELECT pc.category_name,
+    SUM(total_qty) AS quantity,
     SUM(gross_revenue - discount) AS total_net_revenue,
-    SUM(discount) AS total_discount
-FROM cte_category_subset
-GROUP BY 1
+    SUM(discount) AS total_discount,
+    ROUND(100.0 * SUM(gross_revenue) / (SELECT SUM(gross_revenue) FROM cte_prd_category), 2) AS revenue_split_pcent,
+    tc.top_product
+FROM cte_prd_category pc
+JOIN cte_top_selling_prd_cat tc
+    ON pc.category_name = tc.category_name
+GROUP BY 1, 6
 ORDER BY 2 DESC;
 ```
 
 __Answer:__
 
-| category_name | quantity | total_net_revenue | total_discount |
-| :- | -: | -: | -: |
-| Womens| 22734| 505682.8| 69650.2|
-| Mens| 22482| 627488.6| 86631.4|
+| category_name | quantity | net_revenue | total_discount | top_product |
+| :- | :- | -: | -: | -: |
+| Womens| 22734| 505711.5| 69621.5| 44.62| Grey Fashion Jacket - Womens|
+| Mens| 22482| 627512.2| 86607.8| 55.38| Blue Polo Shirt - Mens|
 
-- There are two categories: Mens and Womens.
-- For Mens category, were sold 22,482 items, with a total revenue of $627,512.29, with a given discount of $86,607.71 in total.
-- For Womens category, were sold slightly more items with a total of 22,734, with a slightly lower total revenue of $505,711.57, with a given discount of $69,621.43 in total.
-
----
-
-### 5. What is the top selling product for each category?
-
-```sql
-WITH cte_prd_category AS (
-    SELECT category_name,
-        product_name,
-        SUM(s.qty) AS quantity,
-        SUM(s.qty * s.price) AS revenue,
-        ROW_NUMBER() OVER(PARTITION BY category_name ORDER BY SUM(qty)) as revenue_rank,
-        ROW_NUMBER() OVER(PARTITION BY category_name ORDER BY SUM(qty)) as qty_rank
-    FROM balanced_tree.sales AS s
-    JOIN balanced_tree.product_details AS p 
-        ON s.prod_id = p.product_id
-    GROUP BY category_name, product_name
-)
-SELECT category_name,
-    product_name,
-    quantity,
-    revenue
-FROM cte_prd_category
-WHERE qty_rank = 1
-```
-
-__Answer:__
-
-| category_name | product_name | quantity | revenue |
-| :- | :- | -: | -: |
-| Mens| Teal Button Up Shirt - Mens| 3646| 36460|
-| Womens| Cream Relaxed Jeans - Womens| 3707| 37070|
-
-- For Mens category the top selling product is a "Teal Button Up Shirt - Mens".
-- For Womens category the top selling product is "Cream Relaxed Jeans - Womens".
+- Total quantity, revenue and discount for each category:
+  - There are two categories: Mens and Womens.
+  - For Mens category, were sold 22,482 items, with a total revenue of $627,512.29, with a given discount of $86,607.71 in total.
+  - For Womens category, were sold slightly more items with a total of 22,734, with a slightly lower total revenue of $505,711.57, with a given discount of $69,621.43 in total.
+- What is the top selling product for each category:
+  - For Mens category the top selling product is a "Blue Polo Shirt - Mens".
+  - For Womens category the top selling product is "Grey Fashion Jacket - Womens".
+- Percentage split of total revenue by category:
+  - Mens category is 55.37% of revenue;
+  - Womens category is 44.63% of revenue.
 
 ---
 
-### 6. What is the percentage split of revenue by product for each segment?
+### 6. What is the percentage split of revenue by product for each segment? & 9. What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
 
 ```sql
 SELECT segment_name,
-    product_name,
-    ROUND(100.0 * SUM(total_revenue) / SUM(SUM(total_revenue)) OVER(PARTITION BY segment_name), 2) AS revenue_split_pcent
-FROM cte_prd_transactions
-GROUP BY segment_name, product_name
-```
-
-__Answer:__
-
-| segment_name | product_name | revenue_split_pcent |
-| :- | :- | -: |
-| Jacket| Grey Fashion Jacket - Womens| 56.99|
-| Jacket| Khaki Suit Jacket - Womens| 23.57|
-| Jacket| Indigo Rain Jacket - Womens| 19.44|
-| Jeans| Navy Oversized Jeans - Womens| 24.04|
-| Jeans| Black Straight Jeans - Womens| 58.14|
-| Jeans| Cream Relaxed Jeans - Womens| 17.82|
-| Shirt| White Tee Shirt - Mens| 37.48|
-| Shirt| Teal Button Up Shirt - Mens| 8.99|
-| Shirt| Blue Polo Shirt - Mens| 53.53|
-| Socks| Navy Solid Socks - Mens| 44.24|
-| Socks| White Striped Socks - Mens| 20.20|
-| Socks| Pink Fluro Polkadot Socks - Mens| 35.57|
-
----
-
-### 7. What is the percentage split of revenue by segment for each category?
-
-```sql
-SELECT category_name,
-    segment_name,
-    ROUND(100.0 * SUM(total_revenue) / SUM(SUM(total_revenue)) OVER(PARTITION BY category_name), 2) AS revenue_split_pcent
-FROM cte_prd_transactions
-GROUP BY category_name, segment_name
-```
-
-__Answer:__
-
-| category_name | segment_name | revenue_split_pcent |
-| :- | :- | -: |
-| Mens| Shirt| 56.82|
-| Mens| Socks| 43.18|
-| Womens| Jeans| 36.19|
-| Womens| Jacket| 63.81|
-
----
-
-### 8. What is the percentage split of total revenue by category?
-
-```sql
-SELECT category_name,
-    ROUND(100.0 * SUM(revenue) / (SELECT SUM(revenue) FROM cte_by_category), 2) AS revenue_split_pcent
-FROM cte_by_category
-GROUP BY category_name
-```
-
-__Answer:__
-
-- Mens category is 55.37% of revenue;
-- Womens category is 44.63% of revenue.
-
----
-
-### 9. What is the total transaction “penetration” for each product? (hint: penetration = number of transactions where at least 1 quantity of a product was purchased divided by total number of transactions)
-
-```sql
-SELECT p.product_name,
+    p.product_name,
     ROUND(100.0 * COUNT(*)::decimal/
-        (SELECT COUNT(DISTINCT txn_id) FROM balanced_tree.sales), 2) as penetration_pcent
+        (SELECT COUNT(DISTINCT txn_id) FROM balanced_tree.sales), 2) AS penetration_pcent,
+    ROUND(100.0 * SUM(s.qty * s.price) / SUM(SUM(s.qty * s.price)) 
+        OVER(PARTITION BY segment_name), 2) AS revenue_split_pcent
 FROM balanced_tree.sales s
 JOIN balanced_tree.product_details p
     ON s.prod_id = p.product_id
-GROUP BY product_name
+GROUP BY 1, 2;
 ```
 
 __Answer:__
 
-| product_name | count | penetration_pcent |
-| :- | -: | -: |
-| White Tee Shirt - Mens| 1268| 50.72|
-| Navy Solid Socks - Mens| 1281| 51.24|
-| Grey Fashion Jacket - Womens| 1275| 51.00|
-| Navy Oversized Jeans - Womens| 1274| 50.96|
-| Pink Fluro Polkadot Socks - Mens| 1258| 50.32|
-| Khaki Suit Jacket - Womens| 1247| 49.88|
-| Black Straight Jeans - Womens| 1246| 49.84|
-| White Striped Socks - Mens| 1243| 49.72|
-| Blue Polo Shirt - Mens| 1268| 50.72|
-| Indigo Rain Jacket - Womens| 1250| 50.00|
-| Cream Relaxed Jeans - Womens| 1243| 49.72|
-| Teal Button Up Shirt - Mens| 1242| 49.68|
+| segment_name | product_name | penetration_pcent |revenue_split_pcent |
+| :- | :- | -: | -:|
+| Jacket| Indigo Rain Jacket - Womens| 50.00| 19.45|
+| Jacket| Khaki Suit Jacket - Womens| 49.88| 23.51|
+| Jacket| Grey Fashion Jacket - Womens| 51.00| 57.03|
+| Jeans| Navy Oversized Jeans - Womens| 50.96| 24.06|
+| Jeans| Black Straight Jeans - Womens| 49.84| 58.15|
+| Jeans| Cream Relaxed Jeans - Womens| 49.72| 17.79|
+| Shirt| White Tee Shirt - Mens| 50.72| 37.43|
+| Shirt| Blue Polo Shirt - Mens| 50.72| 53.60|
+| Shirt| Teal Button Up Shirt - Mens| 49.68| 8.98|
+| Socks| Navy Solid Socks - Mens| 51.24| 44.33|
+| Socks| White Striped Socks - Mens| 49.72| 20.18|
+| Socks| Pink Fluro Polkadot Socks - Mens| 50.32| 35.50|
+
+- Percentage split of revenue by product for each segment can be seen in the table above on column named `revenue_split_pcent`.
+  - For Jacket segment, the product that contributes the most to the revenue is `Grey Fashion Jacket - Womens` with 57.03%.
+  - For Jeans segment, the product that contributes the most to the revenue is `Black Straight Jeans - Womens` with 58.14%.
+  - For Shirt segment, the product that contributes the most to the revenue is `Blue polo Shirt - Mens` with 53.53%.
+  - Socks segment, the product that contributes the most to the revenue is `Navy Solid Socks - Mens` with 44.24%.
+- Total transaction “penetration” for each product can be seen in the table above on the column named `penetration_pcent`.
+  - All products have a penetration percentage higher than 49%. The top two products are `Navy Solid Socks - Mens` and `Grey Fashion Jacket - Womens` with 51.24% and 51.00%, respectively.
 
 ---
 
