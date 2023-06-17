@@ -2,6 +2,8 @@
 
 ## Solution - B. Interest Analysis Questions
 
+![badge](https://img.shields.io/badge/PostgreSQL-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
+
 View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-8/sql-syntax/B-interest-analysis.sql).
 
 ### 1. Which interests have been present in all `month_year` dates in our dataset?

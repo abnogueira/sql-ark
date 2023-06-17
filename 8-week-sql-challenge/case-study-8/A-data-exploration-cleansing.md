@@ -2,6 +2,8 @@
 
 ## Solution - A. Data Exploration and Cleansing Questions
 
+![badge](https://img.shields.io/badge/PostgreSQL-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
+
 View the complete syntax in [here](https://github.com/abnogueira/sql-ark/blob/main/8-week-sql-challenge/case-study-8/sql-syntax/A-data-exploration-cleansing.sql).
 
 ### 1. Update the `fresh_segments.interest_metrics` table by modifying the `month_year` column to be a date data type with the start of the month
